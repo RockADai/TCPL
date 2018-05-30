@@ -4,8 +4,13 @@
 */
 int main(){
     int c;
+    char lastc='0';
     while((c=getchar())!=EOF){
-        putchar(c);
+        if(c!=' ')
+            putchar(c);
+        else if(lastc!=' ')
+            putchar(c);
+        lastc=c;
     }
     return 0;
 }
