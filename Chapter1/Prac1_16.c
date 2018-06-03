@@ -23,17 +23,18 @@ int main(){
     return 0;
 }
 int getline(char line[],int lim){
-    int c,i;
+    int c,i,j=0;
     for(i=0;(c=getchar())!=EOF&&c!='\n';++i)
         if(i<lim-2){
-            s[i]=c;
-            ++i;
-        }
+            line[j]=c;
+            ++j;
+        }//×Ö·ûÊıÎ´³¬ÏŞ
     if(c=='\n'){
-        s[i]=c;
+        line[j]=c;
         ++i;
+        ++j;
     }
-    s[i]='\0';
+    line[j]='\0';
     return i;
 }
 void copy(char to[],char from[]){
