@@ -1,32 +1,32 @@
 #include <stdio.h>
 /*
-��д����detab���������е��Ʊ����滻���ʵ���Ŀ�Ŀո�ʹ�ո��������һ���Ʊ�����ֹλ�ĵط���
-�����Ʊ�����ֹλ��λ���ǹ̶��ģ�����ÿ��n�оͻ����һ���Ʊ�����ֹλ��nӦ����Ϊ�������Ƿ��ų����أ�
+编写程序detab，将输入中的制表符替换成适当数目的空格，使空格充满到下一个制表符终止位的地方。
+假设制表符终止位的位置是固定的，如每隔n列出现一个制表符终止位，n应作为变量还是符号常量？
 */
-#define TABSPACE 6//�Ʊ�λ��С
+#define TABSPACE 6//制表位大小
 int main(){
     int c,nblank,pos;
-    nblank=0;//��Ҫ�Ŀո���
-    pos=1;//�еĵ�ǰλ��
+    nblank=0;//需要的空格数
+    pos=1;//行的当前位置
     while((c=getchar())!=EOF){
         if(c=='\t'){
             nblank=TABSPACE-(pos-1)%TABSPACE;
-            /*ÿTABSPACE��λ��Ϊһ���Ʊ�λ�����������ַ�λ����TABSPACEȡ�಻Ϊ0������TABSPACE��ȥ������
-            �������Ʊ�λ����ʣ��ո��������ÿո��滻*/
+            /*每TABSPACE个位置为一个制表位，若已输入字符位数对TABSPACE取余不为0，则令TABSPACE减去余数，
+            获得填充制表位所需剩余空格数，并用空格替换*/
             while(nblank>0){
                 putchar(' ');
                 ++pos;
                 --nblank;
             }
-        }//�������Ʊ������滻Ϊ�ո�
+        }//若输入制表符则替换为空格
         else if(c=='\n'){
             putchar(c);
             pos=1;
-        }//�����뻻�з���pos��1����ʾ��ʼ����
+        }//若输入换行符，pos置1，表示开始新行
         else{
             putchar(c);
             ++pos;
-        }//��ͨ�ַ�ֱ�����
+        }//普通字符直接输出
     }
 }
-//nӦ����Ϊ���������������е�TABSPACE
+//n应该作为常量，即本程序中的TABSPACE

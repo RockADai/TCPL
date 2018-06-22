@@ -8,7 +8,7 @@
 统计输入的行数、单词数、字符数
 */
 int main(){
-    int c,nl,nw.nc,state;
+    int c,nl,nw,nc,state;
     state=OUT;
     nl=nw=nc=0;
     while((c=getchar())!=EOF){

@@ -1,6 +1,6 @@
 #include <stdio.h>
 /*
-ÖØĞ´ÎÂ¶È×ª»»
+????????????
 */
 float celsius_to_fahr(float fahr){
     return (5.0/9.0)*(fahr-32.0);
