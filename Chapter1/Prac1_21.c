@@ -28,7 +28,7 @@ int main(){
                     putchar(' ');
             putchar(c);
             if(c == '\n')
-                pos = 0;//若输入了换行符则充值pos，表示开始新行
+                pos = 0;//若输入了换行符则重置pos，表示开始新行
             else if(c == '\t')
                 pos = pos+(TABSPACE-(pos-1)%TABSPACE)-1;//若输入了tab则位置置于下一个制表位
         }
