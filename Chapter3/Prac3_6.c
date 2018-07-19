@@ -21,3 +21,15 @@ void itoa(int n,char s[],int w){
     s[i] = '\0';
     reverseStr(s);
 }
+void reverseStr(char s[]){
+    int i=0;
+    char temp;
+    while(s[i]!='\n')
+        ++i;
+    --i;
+    for(int j=0;j<=i;++j,--i){
+        temp=s[j];
+        s[j]=s[i];
+        s[i]=temp;
+    }
+}
