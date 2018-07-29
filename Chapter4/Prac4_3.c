@@ -14,6 +14,10 @@
 4.3：加入取模运算，在getop()中增添负数判断预处理
 4.4：增加了几个命令，分别为：打印栈顶元素且不弹出（Ans操作）；复制栈顶元素；交换栈顶两个元素的值；清空栈；
 4.5：增加了sin，cos，exp，pow四种数学运算，并为此修改getop()，加入对数学函数的识别预处理
+4.6：增加处理变量的命令，增加一个变量存放最近打印的值
+4.7：编写函数ungets(s)，将整个字符串s压回到输入中（它需要使用buf和bufp吗？它能否仅使用ungetch函数？）
+4.8：若最多只压回一个字符，修改getch和ungetch
+4.9：以上的getch和ungetch不能正确处理压回的EOF，应如何修正？
 */
 
 #define MAXVAL 100//栈val的最大深度
@@ -25,14 +29,20 @@
 int getop(char s[]);//获取下一个运算符或操作数
 void push(double f);//将f压入栈
 double pop();//弹出并返回栈顶值
+int getch();
+void ungetch(int c);
 void clear();//清空
 void mathfnc(char s[]);//数学计算
+void ungets(char s[]);//压回字符串，不直接操作buf和bufp，该操作和出错检查由ungetch()处理
 
 int main()
 {
-    int type;
-    double op1,op2;//临时变量
+    int i,type,var = 0;
+    double op1,op2,v;//临时变量，v存放最近打印的值
     char s[MAXOP];
+    double variable[26];
+    for(i = 0;i < 26;i++)
+        variable[i] = 0.0;
     while((type = getop(s)) != EOF){
         switch(type){
             case NUMBER:
@@ -84,11 +94,23 @@ int main()
                 printf("\t%.8g\n",op2);
                 push(op2);
                 break;//若直接打印可能造成堆栈或指针变化
+            case '=':
+                pop();
+                if(var >= 'A' && var <= 'Z')
+                    variable[var-'A'] = pop();
+                else
+                    printf("error:no variable name\n");
+                break;//赋值操作
             case NAME:
                 mathfnc(s);
                 break;
             default:
-                printf("error:unknown command %s\n",s);
+                if(type >= 'A' && type <= 'Z')
+                    push(variable[type-'A']);
+                else if(type == 'v')
+                    push(v);
+                else
+                    printf("error:unknown command %s\n",s);
                 break;
         }
     }
@@ -152,7 +174,7 @@ int getop(char s[]){
     return NUMBER;
 }
 
-char buf[BUFSIZE];//输入读取缓冲区
+int buf[BUFSIZE];//输入读取缓冲区
 int bufp = 0;
 int getch(){
     return (bufp > 0) ? buf[--bufp] : getchar();
@@ -185,3 +207,33 @@ void mathfnc(char s[]){
         printf("error:%s not supported\n",s);
 }
 
+void ungets(char s[]){
+    int len = strlen(s);
+    while(len > 0)//执行ungetch操作，次数为字符串s的字符个数
+        ungetch(s[--len]);//先减1去掉\0
+}
+
+/*
+题4.8：
+char buf = 0;
+int getch(){
+    int c;
+    if(buf != 0)
+        c = buf;
+    else
+        c = getchar();
+    buf = 0;
+    return c;
+}
+void ungetch(int c){
+    if(buf != 0)
+        printf("ungetch:too many characters\n");
+    else
+        buf = c;
+}
+*/
+
+/*
+题4.9：
+int buf[BUFSIZE];//将缓冲区声明为int型
+*/
