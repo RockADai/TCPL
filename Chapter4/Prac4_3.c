@@ -18,6 +18,8 @@
 4.7：编写函数ungets(s)，将整个字符串s压回到输入中（它需要使用buf和bufp吗？它能否仅使用ungetch函数？）
 4.8：若最多只压回一个字符，修改getch和ungetch
 4.9：以上的getch和ungetch不能正确处理压回的EOF，应如何修正？
+4.10：另一种方法是通过getline函数读入整个输入行，这种情况下可以不使用getch和ungetch函数，运用这一方法修改程序
+4.11：修改getop函数，使其不必使用ungetch函数。（可以使用一个静态内部变量解决该问题）
 */
 
 #define MAXVAL 100//栈val的最大深度
@@ -236,4 +238,74 @@ void ungetch(int c){
 /*
 题4.9：
 int buf[BUFSIZE];//将缓冲区声明为int型
+*/
+
+/*
+题4.10：
+int getline(char line[],int lim){
+    int c,i,j=0;
+    for(i=0;(c=getchar())!=EOF&&c!='\n';++i)
+        if(i<lim-2){
+            line[j]=c;
+            ++j;
+        }//字符数未超限
+    if(c=='\n'){
+        line[j]=c;
+        ++i;
+        ++j;
+    }
+    line[j]='\0';
+    return i;
+}
+#define MAXLINE 100
+int li = 0;
+char line[MAXLINE];
+int getop(char s[]){
+    int c,i;
+    if(line[li] == '\0')
+        if(getline(line,MAXLINE) == 0)
+            return EOF;
+        else
+            li = 0;
+    while((s[0] = c = line[li++]) == ' ' || c == '\t');
+    s[1] = '\0';
+    if(!isdigit(c) && c != '.')
+        return c;
+    i = 0;
+    if(isdigit(c))
+        while(isdigit(s[++i] = c = line[li++]));
+    if(c == '.')
+        while(isdigit(s[++i] = c = line[li++]));
+    s[i] = '\0';
+    li--;
+    return NUMBER;
+}
+*/
+
+/*
+题4.11：
+int getop(char s[]){
+    int c,i;
+    static int lastc = 0;
+    if(lastc == 0)
+        c = getch();
+    else{
+        c = lastc;
+        lastc = 0;
+    }
+    while((s[0] = c) == ' ' || c == '\t')
+        c = getch();
+    s[1] = '\0';
+    if(!isdigit(c) && c != '.')
+        return c;
+    i = 0;
+    if(isdigit(c))
+        while(isdigit(s[++i] = c = getch()));
+    if(c == '.')
+        while(isdigit(s[++i] = c = getch()));
+    s[i] = '\0';
+    if(c != EOF)
+        lastc = c;
+    return NUMBER;
+}
 */
